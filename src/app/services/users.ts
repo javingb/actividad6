@@ -1,6 +1,6 @@
 import { Service } from '@angular/core';
 import { Injectable,computed, signal} from '@angular/core';
-import { User } from '../interfaces/user';
+import { IUser } from '../interfaces/iuser';
 
 @Service()
 export class Users {}
@@ -10,7 +10,7 @@ export class Users {}
 })
 export class UsersService {
 
-    private arrayUsers = signal<User[]>([{
+    private arrayUsers = signal<IUser[]>([{
         id: 1,
         first_name: 'Pepe',
         last_name: 'Domingo Rodriguez',
@@ -27,17 +27,17 @@ export class UsersService {
         return this.misUsuarios;
     }
 
-    getById(id: number): User | undefined {
+    getById(id: number): IUser | undefined {
         return this.arrayUsers().find(u => u.id == id);
     }
 
-    create(user: User): string {
+    create(user: IUser): string {
         user.id = this.currentId++;
         this.arrayUsers.update(users => [...users, user]);
         return 'Usuario creado correctamente';
     }
 
-    update(id: number, updatedUser: User): string {
+    update(id: number, updatedUser: IUser): string {
         this.arrayUsers.update(users =>
         users.map(u => (u.id == id ? { ...updatedUser, id: u.id } : u))
         );
