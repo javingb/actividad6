@@ -1,0 +1,4 @@
+.botonActivo {
+    color: #4377e8; /* Destaca el texto en color azul de Bootstrap */
+    border-bottom: 1px solid #4377e8;
+}
