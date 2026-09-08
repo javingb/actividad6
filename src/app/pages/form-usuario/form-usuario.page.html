@@ -1,1 +1,35 @@
-<p>form-usuario works!</p>
+<section class="container mt-3">
+
+    <form (submit)="getDataForm($event)">
+
+        <div class="my-2">
+            <label for="nombreUsuario" class="form-label">Nombre de usuario</label>
+            <input class="form-control" type="text" id="nombreUsuario" placeholder="Introduce tu nombre de usuario" [formField]="formulario.username">
+        </div>
+        
+        <div class="my-2">
+            <label for="nombre" class="form-label">Nombre</label>
+            <input class="form-control" type="text" id="nombre" placeholder="Introduce tu nombre" [formField]="formulario.first_name">
+        </div>
+
+        <div class="my-2">
+            <label for="apellidos" class="form-label">Apellidos</label>
+            <input class="form-control" type="text" id="apellidos" placeholder="Introduce tu apellido" [formField]="formulario.last_name">
+        </div>
+
+        <div class="my-2">
+            <label for="email" class="form-label">Email</label>
+            <input class="form-control" type="email" id="email" placeholder="Introduce tu email" [formField]="formulario.email">
+        </div>
+
+        <div class="my-2">
+            <label for="imagen" class="form-label">Imagen</label>
+            <input class="form-control" type="text" id="imagen" placeholder="Introduce la URL de tu imagen" [formField]="formulario.image">
+        </div>
+
+        <input type="submit" value="Guardar Usuario" class="btn btn-danger">
+
+    </form>
+
+</section> 
+

@@ -1,1 +1,14 @@
-<p>home works!</p>
+<section class="container py-3">
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
+        @for (user of misUsuarios(); track user.id) {
+            <div class="col">
+                <app-tarjeta-usuario [usuario]="user"></app-tarjeta-usuario>
+            </div>
+        } 
+        @empty {
+            <div class="col-12 text-center my-5">
+                <div class="alert alert-info">No hay usuarios registrados actualmente.</div>
+            </div>
+        }
+    </div>
+</section>

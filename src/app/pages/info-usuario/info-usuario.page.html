@@ -1,1 +1,7 @@
-<p>info-usuario works!</p>
+<section class="container py-3">
+    <div class="container py-5">
+        @if (miUsuario().id !== 0) {
+            <app-ficha-usuario [usuario]="miUsuario()" (alBorrar)="borrarUsuario()"></app-ficha-usuario>
+        }
+    </div>
+</section>

@@ -1,0 +1,33 @@
+@if (usuario(); as user) {
+    <div class="container py-5">
+        <div class="card shadow-sm border-0 tarjeta-info-usuario mx-auto">
+            <div class="card-body p2">
+                <div class="row align-items-center g-0">
+                    <div class="col-5 text-center border-end pe-4">
+                        <img [src]="user.image" [alt]="user.first_name" class="rounded-circle imagen-usuario">
+                    </div>
+                    <div class="col-7 ps-4 text-start">
+                        <p class="mb-2 fs-5">
+                            <span class="fw-semibold">Nombre:</span> {{ user.first_name }}
+                        </p>
+                        <p class="mb-2 fs-5">
+                            <span class="fw-semibold">Apellido:</span> {{ user.last_name }}
+                        </p>
+                        <p class="mb-2 fs-5">
+                            <span class="fw-semibold">Nombre Usuario:</span> {{ user.username }}
+                        </p>
+                        <p class="mb-4 fs-5">
+                            <span class="fw-semibold">Email:</span> {{ user.email }}
+                        </p>
+
+                        <div class="d-flex gap-2">
+                            <button (click)="borrarUsuario()" class="btn btn-outline-danger action-btn">Eliminar</button>
+                            <a [routerLink]="['/updateuser', user.id]" class="btn btn-outline-primary action-btn">Actualizar</a>
+                            <a [routerLink]="['/home']" class="btn btn-outline-secondary action-btn">Volver a listado</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}

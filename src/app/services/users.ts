@@ -10,15 +10,56 @@ export class Users {}
 })
 export class UsersService {
 
-    private arrayUsers = signal<IUser[]>([{
+    private arrayUsers = signal<IUser[]>([
+    {
         id: 1,
         first_name: 'Pepe',
         last_name: 'Domingo Rodriguez',
         username: 'pepe',
         email: 'pepe@gmail.com',
-        image: 'https://i.pravatar.cc/500?u=pepe@gmail.com'
+        image: 'https://i.pravatar.cc/500?u=pepe123'
+    },
+    {
+        id: 2,
+        first_name: 'María',
+        last_name: 'García López',
+        username: 'mariag',
+        email: 'maria.garcia@gmail.com',
+        image: 'https://i.pravatar.cc/500?u=maria.garcia@gmail.com'
+    },
+    {
+        id: 3,
+        first_name: 'Carlos',
+        last_name: 'Fernández Ruiz',
+        username: 'carlosf',
+        email: 'carlos.fernandez@gmail.com',
+        image: 'https://i.pravatar.cc/500?u=carlos.fernandez@gmail.com'
+    },
+    {
+        id: 4,
+        first_name: 'Lucía',
+        last_name: 'Martínez Sánchez',
+        username: 'luciam',
+        email: 'lucia.martinez@gmail.com',
+        image: 'https://i.pravatar.cc/500?u=lucia.martinez@gmail.com'
+    },
+    {
+        id: 5,
+        first_name: 'Javier',
+        last_name: 'Torres Gómez',
+        username: 'javit',
+        email: 'javier.torres@gmail.com',
+        image: 'https://i.pravatar.cc/500?u=javier.torres@gmail.com'
+    },
+    {
+        id: 6,
+        first_name: 'Ana',
+        last_name: 'Pérez Molina',
+        username: 'anap',
+        email: 'ana.perez@gmail.com',
+        image: 'https://i.pravatar.cc/500?u=ana.perez@gmail.com'
     }
-    ]);
+]);
 
     private currentId: number = 2;
     misUsuarios = computed(() => this.arrayUsers());
@@ -27,7 +68,7 @@ export class UsersService {
         return this.misUsuarios;
     }
 
-    getById(id: number): IUser | undefined {
+    getById(id: number): IUser | undefined {    
         return this.arrayUsers().find(u => u.id == id);
     }
 

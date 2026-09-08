@@ -1,0 +1,45 @@
+.user-card {
+    border: 1px solid #dee2e6;
+    border-radius: 10px;
+} 
+
+.imagen-user {
+    width: 110px;
+    height: 110px;
+    object-fit: cover;
+    background-color: #375A7F;
+}
+
+.accion-boton {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    color: #495057;
+    text-decoration: none;
+    font-size: 0.875rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.accion-boton:hover {
+    color: #212529;
+}
+
+.btn-borrar:hover {
+    color: #dc3545;
+}
+
+.btn-actualizar:hover {
+    color: #007bff;
+}
+
+.btn-detalle:hover {
+    color: #8cb958;
+}
+
+.accion-icono {
+    font-size: 22px;
+
+}

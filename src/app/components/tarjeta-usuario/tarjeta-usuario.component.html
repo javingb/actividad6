@@ -1,1 +1,22 @@
-<p>tarjeta-usuario works!</p>
+<div class="card h-100 text-center p-3 shadow-sm user-card">
+    <img [src]="usuario.image" class="rounded-circle mx-auto my-2 imagen-user" [alt]="usuario.first_name">
+    
+    <div class="card-body p-2">
+        <h5 class="card-title fs-6 fw-bold mb-3">{{ usuario.first_name }} {{ usuario.last_name }}</h5>
+        
+        <div class="d-flex justify-content-center gap-4">
+            <a [routerLink]="['/user', usuario.id]" class="accion-boton btn-detalle" title="Ver detalle">
+                <span class="material-symbols-outlined accion-icono">search</span>
+                <span class="accion-label">Ver detalle</span>
+            </a>
+            <a [routerLink]="['/updateuser', usuario.id]" class="accion-boton btn-actualizar" title="Actualizar">
+                <span class="material-symbols-outlined accion-icono">autorenew</span>
+                <span class="accion-label">Actualizar</span>
+            </a>
+            <button (click)="borrarUsuario()" class="accion-boton btn-borrar" title="Borrar">
+                <span class="material-symbols-outlined accion-icono">delete</span>
+                <span class="accion-label">Borrar</span>
+            </button>
+        </div>
+    </div>
+</div>
