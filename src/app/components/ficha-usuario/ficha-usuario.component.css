@@ -1,18 +1,40 @@
 .tarjeta-info-usuario {
-    max-width: 700px;
+    max-width: 800px;
     border-radius: 16px;
 }
 
 .imagen-usuario {
-    width: 200px;
-    height: 200px;
+    width: clamp(120px, 35vw, 200px);
+    height: clamp(120px, 35vw, 200px);
     object-fit: cover;
     background-color: #375A7F;
 }
 
-.btn-accion {
+.action-btn {
     flex: 1;
     white-space: nowrap;
     border-radius: 8px;
-    padding: 10px;
+    padding: 6px 10px;
+    font-size: 1rem;
+}
+
+.dato-usuario {
+    font-size: 1.1rem; /* ajusta el valor a tu gusto: 0.85rem, 1rem, etc. */
+}
+
+@media (max-width: 575.98px) {
+    .action-btn {
+        width: 100%;
+    }
+}
+
+.columna-avatar {
+    border-bottom: 1px solid #dee2e6;
+}
+
+@media (min-width: 768px) {
+    .columna-avatar {
+        border-bottom: none;
+        border-right: 1px solid #dee2e6;
+    }
 }

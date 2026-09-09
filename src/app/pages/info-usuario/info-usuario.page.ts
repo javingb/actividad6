@@ -3,7 +3,6 @@ import { Router } from '@angular/router';
 import { UsersService } from '../../services/users';
 import { IUser } from '../../interfaces/iuser';
 import { FichaUsuarioComponent } from '../../components/ficha-usuario/ficha-usuario.component';
-
 @Component({
   imports: [FichaUsuarioComponent],
   selector: 'app-info-usuario',
@@ -31,11 +30,11 @@ export class InfoUsuarioPage {
   }
 
   borrarUsuario(): void {
-      const user = this.miUsuario();
-      if (user && confirm(`¿Estás seguro de eliminar a ${user.first_name} ${user.last_name}?`)) {
-        this.usuariosService.delete(user.id!);
-        this.router.navigate(['/home']);
-      }
+  const user = this.miUsuario();
+  if (user && user.id !== 0) {
+    this.usuariosService.deleteConfirmacion(user, () => {
+      this.router.navigate(['/home']);
+    });
   }
-
+}
 }

@@ -2,3 +2,13 @@
     color: #4377e8; /* Destaca el texto en color azul de Bootstrap */
     border-bottom: 1px solid #4377e8;
 }
+
+.nav-link {
+    font-weight: 400;
+    transition: all 0.2s ease-in-out;
+}
+
+.nav-link:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+    color: #000;
+}

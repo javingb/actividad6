@@ -12,7 +12,7 @@ export class FichaUsuarioComponent {
   usuario = input.required<IUser>();
   alBorrar = output<void>();
 
-  borrarUsuario(): void {
+  borrar(): void {
     this.alBorrar.emit();
   }
 

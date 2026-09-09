@@ -1,6 +1,7 @@
 import { Service } from '@angular/core';
 import { Injectable,computed, signal} from '@angular/core';
 import { IUser } from '../interfaces/iuser';
+import Swal from 'sweetalert2';
 
 @Service()
 export class Users {}
@@ -89,4 +90,31 @@ export class UsersService {
         this.arrayUsers.update(users => users.filter(u => u.id != id));
         return 'Usuario eliminado correctamente';
     }
+
+    deleteConfirmacion(user: IUser, onDeleted?: () => void): void {
+        Swal.fire({
+        title: '¿Estás seguro?',
+        text: `Vas a eliminar a ${user.first_name} ${user.last_name}. Esta acción no se puede deshacer.`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#dc3545',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: 'Sí, eliminar',
+        cancelButtonText: 'Cancelar'
+        }).then((result) => {
+        if (result.isConfirmed) {
+            this.delete(Number(user.id));
+
+            Swal.fire({
+            title: '¡Eliminado!',
+            text: 'El usuario ha sido eliminado correctamente.',
+            icon: 'success',
+            confirmButtonColor: '#090909'
+            }).then(() => {
+            if (onDeleted) onDeleted();
+            });
+        }
+        });
+    }
+
 }
