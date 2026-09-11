@@ -1,93 +1,35 @@
 import { Service } from '@angular/core';
-import { Injectable,computed, signal} from '@angular/core';
-import { IUser } from '../interfaces/iuser';
+import { signal, inject} from '@angular/core';
+import { IUser, IUsersResponse } from '../interfaces/iuser';
 import Swal from 'sweetalert2';
+import { HttpClient, httpResource } from '@angular/common/http';
+import { firstValueFrom } from 'rxjs';
 
 @Service()
-export class Users {}
-
-@Injectable({
-    providedIn: 'root'
-})
 export class UsersService {
+    private url: string = 'https://peticiones.online/api/users';    
+    private httpClient = inject(HttpClient);
 
-    private arrayUsers = signal<IUser[]>([
-    {
-        id: 1,
-        first_name: 'Pepe',
-        last_name: 'Domingo Rodriguez',
-        username: 'pepe',
-        email: 'pepe@gmail.com',
-        image: 'https://i.pravatar.cc/500?u=pepe123'
-    },
-    {
-        id: 2,
-        first_name: 'María',
-        last_name: 'García López',
-        username: 'mariag',
-        email: 'maria.garcia@gmail.com',
-        image: 'https://i.pravatar.cc/500?u=maria.garcia@gmail.com'
-    },
-    {
-        id: 3,
-        first_name: 'Carlos',
-        last_name: 'Fernández Ruiz',
-        username: 'carlosf',
-        email: 'carlos.fernandez@gmail.com',
-        image: 'https://i.pravatar.cc/500?u=carlos.fernandez@gmail.com'
-    },
-    {
-        id: 4,
-        first_name: 'Lucía',
-        last_name: 'Martínez Sánchez',
-        username: 'luciam',
-        email: 'lucia.martinez@gmail.com',
-        image: 'https://i.pravatar.cc/500?u=lucia.martinez@gmail.com'
-    },
-    {
-        id: 5,
-        first_name: 'Javier',
-        last_name: 'Torres Gómez',
-        username: 'javit',
-        email: 'javier.torres@gmail.com',
-        image: 'https://i.pravatar.cc/500?u=javier.torres@gmail.com'
-    },
-    {
-        id: 6,
-        first_name: 'Ana',
-        last_name: 'Pérez Molina',
-        username: 'anap',
-        email: 'ana.perez@gmail.com',
-        image: 'https://i.pravatar.cc/500?u=ana.perez@gmail.com'
-    }
-]);
+    response = signal<IUsersResponse | null>(null)
+    misUsuarios = signal<IUser[]>([])
+    usuarioSeleccionado = signal<IUser | null>(null);
 
-    private currentId: number = 2;
-    misUsuarios = computed(() => this.arrayUsers());
+    usuariosResource = httpResource<IUsersResponse>(() => this.url);
 
-    getAll() {
-        return this.misUsuarios;
+    getById(_id: string) {    
+        return firstValueFrom(this.httpClient.get<IUser>(`${this.url}/${_id}`));
     }
 
-    getById(id: number): IUser | undefined {    
-        return this.arrayUsers().find(u => u.id == id);
-    }
-
-    create(user: IUser): string {
-        user.id = this.currentId++;
-        this.arrayUsers.update(users => [...users, user]);
+    create(usuarioSeleccionado: IUser): string {
         return 'Usuario creado correctamente';
     }
 
-    update(id: number, updatedUser: IUser): string {
-        this.arrayUsers.update(users =>
-        users.map(u => (u.id == id ? { ...updatedUser, id: u.id } : u))
-        );
+    update(_id: number, updatedUser: IUser): string {
         return 'Usuario actualizado correctamente';
     }
 
     delete(id: number): string {
-        this.arrayUsers.update(users => users.filter(u => u.id != id));
+        this.misUsuarios.update(users => users.filter(u => u.id != id));
         return 'Usuario eliminado correctamente';
     }
 

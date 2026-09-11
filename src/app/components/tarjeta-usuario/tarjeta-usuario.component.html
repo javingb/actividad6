@@ -5,11 +5,11 @@
         <h5 class="card-title fs-6 fw-bold mb-3">{{ usuario().first_name }} {{ usuario().last_name }}</h5>
         
         <div class="d-flex justify-content-center gap-4">
-            <a [routerLink]="['/user', usuario().id]" class="accion-boton btn-detalle" title="Ver detalle">
+            <a [routerLink]="['/user', usuario()._id]" class="accion-boton btn-detalle" title="Ver detalle">
                 <span class="material-symbols-outlined accion-icono">search</span>
                 <span class="accion-label">Ver detalle</span>
             </a>
-            <a [routerLink]="['/updateuser', usuario().id]" class="accion-boton btn-actualizar" title="Actualizar">
+            <a [routerLink]="['/updateuser', usuario()._id]" class="accion-boton btn-actualizar" title="Actualizar">
                 <span class="material-symbols-outlined accion-icono">autorenew</span>
                 <span class="accion-label">Actualizar</span>
             </a>

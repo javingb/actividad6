@@ -9,5 +9,5 @@ import { TarjetaUsuarioComponent } from '../../components/tarjeta-usuario/tarjet
 })
 export class HomePage {
   private usersService = inject(UsersService);
-  misUsuarios = this.usersService.misUsuarios;
+  misUsuarios = this.usersService.usuariosResource;
 }

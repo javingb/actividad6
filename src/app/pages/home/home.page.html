@@ -1,6 +1,6 @@
 <section class="container py-3">
     <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
-        @for (user of misUsuarios(); track user.id) {
+        @for (user of misUsuarios.value()?.results; track user._id) {
             <div class="col">
                 <app-tarjeta-usuario [usuario]="user"></app-tarjeta-usuario>
             </div>

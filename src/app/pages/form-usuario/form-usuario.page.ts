@@ -12,10 +12,11 @@ import Swal from 'sweetalert2';
   templateUrl: './form-usuario.page.html',
 })
 export class FormUsuarioPage {
-  id = input<string>();
+  _id = input<string>();
   usuariosService = inject(UsersService);
   router = inject(Router);
   esActualizacion = signal<boolean>(false);
+  respuesta = this.usuariosService.response;
 
   usuarioAct = signal<IUser>({first_name: '',last_name: '',username: '',email: '',image: ''});
 
@@ -27,15 +28,15 @@ export class FormUsuarioPage {
     required(form.image, { message: 'La imagen es obligatoria' });
   });
 
-  ngOnInit() {
-    if (this.id()) {
-      const usuarioEncontrado = this.usuariosService.getById(Number(this.id()));
-      if (usuarioEncontrado) {
-        this.esActualizacion.set(true);
-        this.usuarioAct.set({ ...usuarioEncontrado });
-      } else {
-        this.router.navigate(['/not-found']);
-      }
+  async ngOnInit() {
+    if (this._id()) {
+        const usuarioEncontrado = await this.usuariosService.getById(this._id() as string);
+        if (usuarioEncontrado && (usuarioEncontrado._id || usuarioEncontrado.id)) {
+          this.esActualizacion.set(true);
+          this.usuarioAct.set({ ...usuarioEncontrado });
+        } else {
+          this.router.navigate(['/not-found']);
+        }
     }
   }
 
@@ -43,8 +44,8 @@ export class FormUsuarioPage {
     event.preventDefault();
     const userData = this.usuarioAct();
     
-    if (this.esActualizacion() && this.id()) {
-      this.usuariosService.update(Number(this.id()), userData);
+    if (this.esActualizacion() && this._id()) {
+      this.usuariosService.update(Number(this._id()), userData);
 
       Swal.fire({
         title: '¡Usuario actualizado!',

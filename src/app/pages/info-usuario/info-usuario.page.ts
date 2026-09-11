@@ -11,30 +11,29 @@ import { FichaUsuarioComponent } from '../../components/ficha-usuario/ficha-usua
 })
 export class InfoUsuarioPage {
 
-  id = input<string>();
+  _id = input<string>();
   usuariosService = inject(UsersService);
-  miUsuario = signal<IUser>({id: 0, first_name: '', last_name: '', username: '', email: '', image: ''});
+  miUsuario = signal<IUser>({_id: '', first_name: '', last_name: '', username: '', email: '', image: ''});
   private router = inject(Router);
 
-  ngOnInit() {
-    if (this.id()) {
-      let respuesta = this.usuariosService.getById(Number(this.id()));
-      if (respuesta) {
-        this.miUsuario.set(respuesta);
-      }
-      else {
-        // Si no se encuentra el usuario, redirigir a la página 404
-        this.router.navigate(['/not-found']);
-      }
-    }   
+  async ngOnInit() {
+    if (this._id()) {
+        let respuesta = await this.usuariosService.getById((this._id() as string));
+        if (respuesta && (respuesta._id || respuesta.id)) {
+          this.miUsuario.set(respuesta);
+      } else {
+          this.router.navigate(['/not-found']);
+        }
+    }
   }
 
   borrarUsuario(): void {
-  const user = this.miUsuario();
-  if (user && user.id !== 0) {
-    this.usuariosService.deleteConfirmacion(user, () => {
-      this.router.navigate(['/home']);
-    });
+    const user = this.miUsuario();
+    if (user && user._id !== undefined) {
+      this.usuariosService.deleteConfirmacion(user, () => {
+        this.router.navigate(['/home']);
+      });
+    }
   }
 }
-}
+

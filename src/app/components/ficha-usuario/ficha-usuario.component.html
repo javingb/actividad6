@@ -24,7 +24,7 @@
 
                         <div class="d-flex flex-column flex-sm-row gap-2">
                             <button (click)="borrar()" class="btn btn-outline-danger action-btn">Eliminar</button>
-                            <a [routerLink]="['/updateuser', user.id]" class="btn btn-outline-primary action-btn">Actualizar</a>
+                            <a [routerLink]="['/updateuser', user._id]" class="btn btn-outline-primary action-btn">Actualizar</a>
                             <a [routerLink]="['/home']" class="btn btn-outline-secondary action-btn">Volver a listado</a>
                         </div>
                     </div>

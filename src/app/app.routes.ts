@@ -8,9 +8,9 @@ import { NotFoundPage } from './pages/not-found/not-found.page'; // Importamos l
 export const routes: Routes = [
     { path: '', redirectTo: 'home', pathMatch: 'full' },
     { path: 'home', component: HomePage },                       
-    { path: 'user/:id', component: InfoUsuarioPage },         
+    { path: 'user/:_id', component: InfoUsuarioPage },         
     { path: 'newuser', component: FormUsuarioPage }, 
-    { path: 'updateuser/:id', component: FormUsuarioPage },
+    { path: 'updateuser/:_id', component: FormUsuarioPage },
     { path: 'not-found', component: NotFoundPage },
     { path: '**', redirectTo: 'not-found' }
 ];

@@ -1,5 +1,5 @@
 <section class="container py-3">
-        @if (miUsuario().id !== 0) {
+        @if (miUsuario()._id !== undefined) {
             <app-ficha-usuario [usuario]="miUsuario()" (alBorrar)="borrarUsuario()"></app-ficha-usuario>
         }
 </section>
