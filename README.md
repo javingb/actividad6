@@ -75,11 +75,6 @@ ng serve
 
 Abre `http://localhost:4200` en el navegador. La aplicación recarga automáticamente al modificar cualquier archivo fuente.
 
-### Ejecutar los tests
-
-```bash
-ng test
-```
 
 ## Autor
 
