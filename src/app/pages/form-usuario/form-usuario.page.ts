@@ -1,5 +1,5 @@
 import { Component, inject, input, signal } from '@angular/core';
-import { form, FormField, required, email } from '@angular/forms/signals';
+import { form, FormField, required, email, submit} from '@angular/forms/signals';
 import { Router, RouterLink } from '@angular/router';
 import { IUser } from '../../interfaces/iuser';
 import { UsersService } from '../../services/users';
@@ -23,6 +23,7 @@ export class FormUsuarioPage {
     required(form.first_name, { message: 'El nombre es obligatorio' });
     required(form.last_name, { message: 'El apellido es obligatorio' });
     required(form.email, { message: 'El email es obligatorio' });
+    required(form.username, { message: 'El nombre de usuario es obligatorio' });
     email(form.email, { message: 'Introduce un email válido' });
     required(form.image, { message: 'La imagen es obligatoria' });
   });
@@ -58,54 +59,57 @@ export class FormUsuarioPage {
 
   async getDataForm(event: Event) {
     event.preventDefault();
-    const userData = this.usuarioAct();
 
-    try {
-      if (this.esActualizacion() && this._id()) {
-          await this.usuariosService.update(this._id(), userData);
+    submit(this.formulario, async () => {  
+      const userData = this.usuarioAct();
+
+      try {
+        if (this.esActualizacion() && this._id()) {
+            await this.usuariosService.update(this._id(), userData);
+
+            this.usuariosService.usuariosResource.update(actual => {
+              if (actual) {  
+                return {...actual, results: actual.results.map(u => u._id === this._id() ? { ...userData, _id: this._id() } : u)};
+              }
+              return actual;
+            });
+
+            await Swal.fire({
+              title: '¡Usuario actualizado!',
+              text: `Se han guardado los cambios de ${userData.first_name}`,
+              icon: 'success',
+              confirmButtonColor: '#090909',
+            });
+            this.router.navigate(['/home']);
+
+        } else {
+          const usuarioCreado = await this.usuariosService.create(userData);
+          const nuevoUsuario = {...usuarioCreado, _id: usuarioCreado._id ?? crypto.randomUUID(), image: userData.image};
 
           this.usuariosService.usuariosResource.update(actual => {
-            if (actual) {  
-              return {...actual, results: actual.results.map(u => u._id === this._id() ? { ...userData, _id: this._id() } : u)};
+            if (actual) {
+              return { ...actual, results: [...actual.results, nuevoUsuario]  };
             }
             return actual;
           });
 
           await Swal.fire({
-            title: '¡Usuario actualizado!',
-            text: `Se han guardado los cambios de ${userData.first_name}`,
+            title: '¡Usuario registrado!',
+            text: `Se ha creado a ${userData.first_name} correctamente`,
             icon: 'success',
             confirmButtonColor: '#090909',
           });
           this.router.navigate(['/home']);
-
-      } else {
-        const usuarioCreado = await this.usuariosService.create(userData);
-        const nuevoUsuario = {...usuarioCreado, _id: usuarioCreado._id ?? crypto.randomUUID(), image: userData.image};
-
-        this.usuariosService.usuariosResource.update(actual => {
-          if (actual) {
-            return { ...actual, results: [...actual.results, nuevoUsuario]  };
-          }
-          return actual;
-        });
-
-        await Swal.fire({
-          title: '¡Usuario registrado!',
-          text: `Se ha creado a ${userData.first_name} correctamente`,
-          icon: 'success',
+        }
+      } catch (error) {
+        console.error('Error al guardar el usuario:', error);
+        Swal.fire({
+          title: 'Error',
+          text: 'No se ha podido guardar el usuario. Inténtalo de nuevo.',
+          icon: 'error',
           confirmButtonColor: '#090909',
         });
-        this.router.navigate(['/home']);
       }
-    } catch (error) {
-      console.error('Error al guardar el usuario:', error);
-      Swal.fire({
-        title: 'Error',
-        text: 'No se ha podido guardar el usuario. Inténtalo de nuevo.',
-        icon: 'error',
-        confirmButtonColor: '#090909',
-      });
-    }
+  });
 }
 }

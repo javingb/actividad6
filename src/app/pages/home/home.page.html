@@ -1,4 +1,4 @@
-<section class="container py-3">
+<section class="py-3">
     <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
         @for (user of misUsuarios.value()?.results; track user._id) {
             <div class="col">
@@ -11,4 +11,20 @@
             </div>
         }
     </div>
+    @if (paginas().length > 1) {
+        <nav class="d-flex justify-content-center mt-4">
+            <ul class="pagination">
+                @for (pagina of paginas(); track pagina) {
+                    <li class="page-item">
+                        <button
+                            class="page-link rounded-circle mx-1 pagina-boton"
+                            [class.active]="pagina === usersService.currentPage()"
+                            (click)="irAPagina(pagina)">
+                            {{ pagina }}
+                        </button>
+                    </li>
+                }
+            </ul>
+        </nav>
+    }
 </section>

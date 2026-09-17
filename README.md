@@ -1,59 +1,86 @@
-# Actividad6
+# Actividad 6 — Gestión de Usuarios (Angular + API REST)
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 22.0.4.
+Aplicación Angular que consume una API externa para listar, ver el detalle, crear, actualizar y eliminar usuarios.
 
-## Development server
 
-To start a local development server, run:
+## API
+
+Este proyecto consume la API pública y educativa de [peticiones.online](https://peticiones.online):
+
+```
+https://peticiones.online/api/users
+```
+
+| Método | Endpoint | Acción |
+|---|---|---|
+| GET ALL| `/api/users?page=X&per_page=Y` | Listado paginado de usuarios |
+| GET BY ID | `/api/users/:_id` | Detalle de un usuario |
+| CREATE | `/api/users` | Crear un usuario |
+| UPDATE | `/api/users/:_id` | Actualizar un usuario |
+| DELETE | `/api/users/:_id` | Eliminar un usuario |
+
+> ⚠️ **Importante — API mockeada:** esta API  **no persiste los cambios** en su base de datos: aunque el `POST`, `PUT` y `DELETE` responden correctamente (código 200 con el objeto correspondiente), un `GET` posterior sigue devolviendo siempre el mismo conjunto de datos original. Para que la aplicación sea usable a pesar de esto, tras cada creación/actualización/borrado se actualiza también la copia local en memoria (`usuariosResource`), de forma que los cambios se reflejan al instante en la interfaz durante la sesión.
+>
+> Como la paginación del listado (`/home`) pide una página distinta al servidor cada vez que el usuario navega entre páginas, si cambias de página después de crear, editar o borrar un usuario, es posible que ese cambio "desaparezca" visualmente (porque el servidor vuelve a devolver los datos originales). Es un efecto secundario inevitable de trabajar con esta API sin persistencia real, no un fallo de la aplicación.
+>
+
+## Rutas
+
+| Ruta | Página | Descripción |
+|---|---|---|
+| `/home` | `HomePage` | Listado de usuarios paginado |
+| `/user/:_id` | `InfoUsuarioPage` | Detalle de un usuario |
+| `/newuser` | `FormUsuarioPage` | Formulario de creación |
+| `/updateuser/:_id` | `FormUsuarioPage` | Formulario de actualización (reutiliza el mismo componente) |
+| `/not-found` | `NotFoundPage` | Página 404 (usuario o ruta no encontrada) |
+
+## Estructura del proyecto
+
+```
+src/app/
+├── components/
+│   ├── navbar/             → Barra de navegación superior
+│   ├── tarjeta-usuario/    → Tarjeta de usuario del listado (home)
+│   └── ficha-usuario/      → Tarjeta de detalle de usuario
+├── pages/
+│   ├── home/               → Listado + paginación
+│   ├── info-usuario/       → Detalle de usuario
+│   ├── form-usuario/       → Formulario crear/actualizar
+│   └── not-found/          → Página 404
+├── services/
+│   └── users.ts             → Lógica de conexión al API
+└── interfaces/
+    └── iuser.ts              → Modelos IUser/IUsersResponse
+```
+
+## Funcionalidades
+
+- Listado de usuarios con paginación
+- Ver detalle completo de un usuario
+- Crear un nuevo usuario (formulario con validaciones)
+- Actualizar un usuario existente (mismo formulario, en modo edición)
+- Eliminar un usuario, con confirmación mediante SweetAlert2
+- Página 404 si se intenta acceder a un usuario o ruta inexistente
+- Validaciones de formulario mediante Signal Forms: campos obligatorios, formato de email, con mensajes de error visibles bajo cada campo
+
+## Cómo ejecutar el proyecto
 
 ```bash
+# Instalar dependencias
+pnpm install
+
+# Levantar servidor de desarrollo
 ng serve
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+Abre `http://localhost:4200` en el navegador. La aplicación recarga automáticamente al modificar cualquier archivo fuente.
 
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
-```
-
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
-```bash
-ng generate --help
-```
-
-## Building
-
-To build the project run:
-
-```bash
-ng build
-```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
+### Ejecutar los tests
 
 ```bash
 ng test
 ```
 
-## Running end-to-end tests
+## Autor
 
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+Javier Núñez García-Bueno

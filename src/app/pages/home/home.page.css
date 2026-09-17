@@ -1,0 +1,17 @@
+.pagina-boton {
+    padding: 10px; 
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    color: #495057;
+    border: 1px solid #dee2e6;
+}
+
+.pagina-boton.active {
+    background-color: #212529;
+    color: white;
+    border-color: #212529;
+}

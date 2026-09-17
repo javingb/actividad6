@@ -8,8 +8,21 @@ import { firstValueFrom } from 'rxjs';
 export class UsersService {
     private url: string = 'https://peticiones.online/api/users';    
     private httpClient = inject(HttpClient);
-    
-    usuariosResource = httpResource<IUsersResponse>(() => this.url);
+
+    // --- Paginación ---
+    currentPage = signal<number>(1);
+    perPage = signal<number>(12);
+
+    usuariosResource = httpResource<IUsersResponse>(() =>`${this.url}?page=${this.currentPage()}&per_page=${this.perPage()}`);
+
+    totalPaginas(): number {
+        const total = this.usuariosResource.value()?.total_pages;
+        return total ?? 0;
+    }
+
+    irAPagina(pagina: number): void {
+        this.currentPage.set(pagina);
+    }
 
     getById(_id: string | undefined) {    
         return firstValueFrom(this.httpClient.get<IUser>(`${this.url}/${_id}`));
