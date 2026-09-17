@@ -16,7 +16,6 @@ export class FormUsuarioPage {
   usuariosService = inject(UsersService);
   router = inject(Router);
   esActualizacion = signal<boolean>(false);
-  respuesta = this.usuariosService.response;
 
   usuarioAct = signal<IUser>({first_name: '',last_name: '',username: '',email: '',image: ''});
 
@@ -28,45 +27,85 @@ export class FormUsuarioPage {
     required(form.image, { message: 'La imagen es obligatoria' });
   });
 
-  async ngOnInit() {
+  ngOnInit() {
+    this.cargarInfo();
+  }
+
+  async cargarInfo() {
     if (this._id()) {
-        const usuarioEncontrado = await this.usuariosService.getById(this._id() as string);
-        if (usuarioEncontrado && (usuarioEncontrado._id || usuarioEncontrado.id)) {
+      const listaActual = this.usuariosService.usuariosResource.value();
+      const usuarioLocal = listaActual?.results.find(u => u._id === this._id());
+
+      if (usuarioLocal) {
           this.esActualizacion.set(true);
-          this.usuarioAct.set({ ...usuarioEncontrado });
+          this.usuarioAct.set({ ...usuarioLocal });
+          return;
+      }
+      try {
+        const respuesta = await this.usuariosService.getById((this._id()));
+        if (respuesta && (respuesta._id || respuesta.id)) {
+          this.esActualizacion.set(true);
+          this.usuarioAct.set({ ...respuesta });
         } else {
           this.router.navigate(['/not-found']);
         }
+      } catch (error) {
+        console.error('Error al cargar la información del usuario:', error);
+        this.router.navigate(['/not-found']);
+      }
     }
   }
 
-  getDataForm(event: Event) {
+  async getDataForm(event: Event) {
     event.preventDefault();
     const userData = this.usuarioAct();
-    
-    if (this.esActualizacion() && this._id()) {
-      this.usuariosService.update(Number(this._id()), userData);
 
-      Swal.fire({
-        title: '¡Usuario actualizado!',
-        text: `Se han guardado los cambios de ${userData.first_name}`,
-        icon: 'success',
-        confirmButtonColor: '#090909',
-      }).then(() => {
-        this.router.navigate(['/home']);
-      });
+    try {
+      if (this.esActualizacion() && this._id()) {
+          await this.usuariosService.update(this._id(), userData);
 
-    } else {
-      this.usuariosService.create(userData);
-      
-      Swal.fire({
-        title: '¡Usuario registrado!',
-        text: `Se ha creado a ${userData.first_name} correctamente`,
-        icon: 'success',
-        confirmButtonColor: '#090909',
-      }).then(() => {
+          this.usuariosService.usuariosResource.update(actual => {
+            if (actual) {  
+              return {...actual, results: actual.results.map(u => u._id === this._id() ? { ...userData, _id: this._id() } : u)};
+            }
+            return actual;
+          });
+
+          await Swal.fire({
+            title: '¡Usuario actualizado!',
+            text: `Se han guardado los cambios de ${userData.first_name}`,
+            icon: 'success',
+            confirmButtonColor: '#090909',
+          });
+          this.router.navigate(['/home']);
+
+      } else {
+        const usuarioCreado = await this.usuariosService.create(userData);
+        const nuevoUsuario = {...usuarioCreado, _id: usuarioCreado._id ?? crypto.randomUUID(), image: userData.image};
+
+        this.usuariosService.usuariosResource.update(actual => {
+          if (actual) {
+            return { ...actual, results: [...actual.results, nuevoUsuario]  };
+          }
+          return actual;
+        });
+
+        await Swal.fire({
+          title: '¡Usuario registrado!',
+          text: `Se ha creado a ${userData.first_name} correctamente`,
+          icon: 'success',
+          confirmButtonColor: '#090909',
+        });
         this.router.navigate(['/home']);
+      }
+    } catch (error) {
+      console.error('Error al guardar el usuario:', error);
+      Swal.fire({
+        title: 'Error',
+        text: 'No se ha podido guardar el usuario. Inténtalo de nuevo.',
+        icon: 'error',
+        confirmButtonColor: '#090909',
       });
     }
-  }  
+}
 }

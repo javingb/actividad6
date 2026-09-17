@@ -1,5 +1,4 @@
-import { Service } from '@angular/core';
-import { signal, inject} from '@angular/core';
+import { Service, inject, signal } from '@angular/core';
 import { IUser, IUsersResponse } from '../interfaces/iuser';
 import Swal from 'sweetalert2';
 import { HttpClient, httpResource } from '@angular/common/http';
@@ -9,54 +8,65 @@ import { firstValueFrom } from 'rxjs';
 export class UsersService {
     private url: string = 'https://peticiones.online/api/users';    
     private httpClient = inject(HttpClient);
-
-    response = signal<IUsersResponse | null>(null)
-    misUsuarios = signal<IUser[]>([])
-    usuarioSeleccionado = signal<IUser | null>(null);
-
+    
     usuariosResource = httpResource<IUsersResponse>(() => this.url);
 
-    getById(_id: string) {    
+    getById(_id: string | undefined) {    
         return firstValueFrom(this.httpClient.get<IUser>(`${this.url}/${_id}`));
     }
 
-    create(usuarioSeleccionado: IUser): string {
-        return 'Usuario creado correctamente';
+    create(user: IUser) {
+        return firstValueFrom(this.httpClient.post<IUser>(this.url, user));
     }
 
-    update(_id: number, updatedUser: IUser): string {
-        return 'Usuario actualizado correctamente';
+    update(_id: string | undefined, updatedUser: IUser) {
+        return firstValueFrom(this.httpClient.put<IUser>(`${this.url}/${_id}`, updatedUser));
     }
 
-    delete(id: number): string {
-        this.misUsuarios.update(users => users.filter(u => u.id != id));
-        return 'Usuario eliminado correctamente';
+    delete(_id: string | undefined) {
+        return firstValueFrom(this.httpClient.delete<IUser>(`${this.url}/${_id}`));
     }
 
-    deleteConfirmacion(user: IUser, onDeleted?: () => void): void {
+    deleteConfirmacion(user: IUser, onDeleted?: () => void) {
         Swal.fire({
-        title: '¿Estás seguro?',
-        text: `Vas a eliminar a ${user.first_name} ${user.last_name}. Esta acción no se puede deshacer.`,
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#dc3545',
-        cancelButtonColor: '#6c757d',
-        confirmButtonText: 'Sí, eliminar',
-        cancelButtonText: 'Cancelar'
-        }).then((result) => {
-        if (result.isConfirmed) {
-            this.delete(Number(user.id));
+            title: '¿Estás seguro?',
+            text: `Vas a eliminar a ${user.first_name} ${user.last_name}. Esta acción no se puede deshacer.`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#dc3545',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: 'Sí, eliminar',
+            cancelButtonText: 'Cancelar'
+        }).then(async (result) => {
 
-            Swal.fire({
-            title: '¡Eliminado!',
-            text: 'El usuario ha sido eliminado correctamente.',
-            icon: 'success',
-            confirmButtonColor: '#090909'
-            }).then(() => {
-            if (onDeleted) onDeleted();
-            });
-        }
+            if (result.isConfirmed) {
+                try {
+                    const respuestaBorrado = await this.delete(user._id);
+                    console.log('Respuesta del DELETE:', respuestaBorrado);
+                    this.usuariosResource.update(actual => {
+                        if (actual) {
+                            return { ...actual, results: actual.results.filter(u => u._id !== user._id) };
+                        }
+                        return actual;
+                    });
+                    Swal.fire({
+                        title: '¡Eliminado!',
+                        text: 'El usuario ha sido eliminado correctamente.',
+                        icon: 'success',
+                        confirmButtonColor: '#090909'
+                    }).then(() => {
+                        if (onDeleted) onDeleted();
+                    });
+                } catch (error) {
+                console.error('Error al eliminar el usuario:', error);
+                Swal.fire({
+                    title: 'Error',
+                    text: 'Hubo un problema al eliminar el usuario. Por favor, inténtalo de nuevo.',
+                    icon: 'error',
+                    confirmButtonColor: '#090909'
+                });
+                }
+            }
         });
     }
-
 }

@@ -1,6 +1,7 @@
-import { Component, input, output} from '@angular/core';
+import { Component, input, inject} from '@angular/core';
 import { RouterLink, Router } from '@angular/router';
 import { IUser } from '../../interfaces/iuser';
+import { UsersService } from '../../services/users';
 
 @Component({
   imports: [RouterLink],
@@ -10,10 +11,13 @@ import { IUser } from '../../interfaces/iuser';
 })
 export class FichaUsuarioComponent {
   usuario = input.required<IUser>();
-  alBorrar = output<void>();
+  private usersService = inject(UsersService);
+  private router = inject(Router);
 
-  borrar(): void {
-    this.alBorrar.emit();
-  }
+  onDelete() {
+    this.usersService.deleteConfirmacion(this.usuario(), () => {
+        this.router.navigate(['/home']);
+    });
+}
 
 }

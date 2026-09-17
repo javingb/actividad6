@@ -16,23 +16,31 @@ export class InfoUsuarioPage {
   miUsuario = signal<IUser>({_id: '', first_name: '', last_name: '', username: '', email: '', image: ''});
   private router = inject(Router);
 
-  async ngOnInit() {
-    if (this._id()) {
-        let respuesta = await this.usuariosService.getById((this._id() as string));
-        if (respuesta && (respuesta._id || respuesta.id)) {
-          this.miUsuario.set(respuesta);
-      } else {
-          this.router.navigate(['/not-found']);
-        }
-    }
+  ngOnInit() {
+      this.cargarInfo();
   }
 
-  borrarUsuario(): void {
-    const user = this.miUsuario();
-    if (user && user._id !== undefined) {
-      this.usuariosService.deleteConfirmacion(user, () => {
-        this.router.navigate(['/home']);
-      });
+  async cargarInfo() {
+    if (this._id()) {
+
+      const listaActual = this.usuariosService.usuariosResource.value();
+      const usuarioLocal = listaActual?.results.find(u => u._id === this._id());
+
+      if (usuarioLocal) {
+          this.miUsuario.set(usuarioLocal);
+          return;
+      }
+      try {
+        const respuesta = await this.usuariosService.getById((this._id()));
+        if (respuesta && (respuesta._id || respuesta.id)) {
+          this.miUsuario.set(respuesta);
+        } else {
+          this.router.navigate(['/not-found']);
+        }
+      } catch (error) {
+        console.error('Error al cargar la información del usuario:', error);
+        this.router.navigate(['/not-found']);
+      }
     }
   }
 }

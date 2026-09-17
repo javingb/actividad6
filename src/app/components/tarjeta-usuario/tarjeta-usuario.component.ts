@@ -14,7 +14,7 @@ export class TarjetaUsuarioComponent {
   usuario = input.required<IUser>();
   private usersService = inject(UsersService);
 
-  borrar(): void {
+  onDelete() {
     this.usersService.deleteConfirmacion(this.usuario());
   }
 }
